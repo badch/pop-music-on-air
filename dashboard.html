@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>流行音樂開麥拉｜教師管理與評分後台 (Netlify Database)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .dashboard-container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+      position: relative;
+      z-index: 10;
+    }
+    .dash-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      color: #fff;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .dash-header h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 25px;
+    }
+    .stat-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .stat-val {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--primary-indigo);
+    }
+    .filter-bar {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .filter-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .select-class {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border-color);
+      font-size: 0.95rem;
+      font-weight: 600;
+      outline: none;
+    }
+    .table-wrapper {
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      overflow-x: auto;
+      box-shadow: var(--shadow-md);
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.92rem;
+    }
+    .data-table th {
+      background: #312e81;
+      color: #ffffff;
+      padding: 14px 16px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .data-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-main);
+    }
+    .data-table tr:hover {
+      background: #f8fafc;
+    }
+    .pill-score {
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      display: inline-block;
+    }
+    .pill-a { background: #dcfce7; color: #15803d; }
+    .pill-b { background: #e0e7ff; color: #4338ca; }
+    .pill-c { background: #fee2e2; color: #b91c1c; }
+    .btn-action {
+      background: var(--primary-purple);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-action:hover { opacity: 0.9; }
+    .btn-delete {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-delete:hover {
+      background: #dc2626;
+      color: #ffffff;
+      border-color: #dc2626;
+    }
+    .btn-danger {
+      background: #ef4444;
+      color: #fff;
+    }
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-decorations" aria-hidden="true">
+    <div class="floating-note note-1">🎵</div>
+    <div class="floating-note note-2">🎶</div>
+  </div>
+
+  <div class="dashboard-container">
+    <div class="dash-header">
+      <div>
+        <h1><span>📊</span> 流行音樂開麥拉 後台紀錄庫</h1>
+        <p style="color: #cbd5e1; margin-top: 4px;">由 Netlify Database (Postgres) 即時驅動・學生作答全校統計</p>
+      </div>
+      <div>
+        <a href="index.html" class="btn-action" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);">
+          📝 回到學生學習單網頁
+        </a>
+      </div>
+    </div>
+
+    <!-- 統計概覽 -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-label">已繳交總人數</span>
+        <span class="stat-val" id="statTotalCount">--</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">綜合平均分數</span>
+        <span class="stat-val" id="statAvgScore">--</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">最高得分</span>
+        <span class="stat-val" id="statMaxScore">--</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">資料庫狀態</span>
+        <span class="stat-val" style="font-size: 1.2rem; color: #10b981;" id="statDbStatus">連線中...</span>
+      </div>
+    </div>
+
+    <!-- 篩選列 -->
+    <div class="filter-bar">
+      <div class="filter-left">
+        <label for="classSelect" style="font-weight: 700; color: #334155;">選擇班級：</label>
+        <select id="classSelect" class="select-class">
+          <option value="">全部班級 (全校總表)</option>
+        </select>
+        <button type="button" class="btn-action" id="btnRefresh" style="padding: 6px 12px; font-size: 0.85rem;">🔄 重新整理</button>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button type="button" class="btn-action" id="btnExport" style="background: #059669;">📥 匯出 CSV</button>
+        <button type="button" class="btn-action btn-danger" id="btnClearData">🗑️ 清空目前名單</button>
+      </div>
+    </div>
+
+    <!-- 學生作答表格 -->
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>班級</th>
+            <th>座號</th>
+            <th>姓名</th>
+            <th>綜合總分</th>
+            <th>表現等級</th>
+            <th>牛刀小試</th>
+            <th>星馬歌手1</th>
+            <th>星馬歌手2</th>
+            <th>關注社會議題</th>
+            <th>繳交時間</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="submissionsTableBody">
+          <tr>
+            <td colspan="11" style="text-align: center; padding: 40px; color: #94a3b8;">
+              正在自 Netlify Database 載入資料...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    let allSubmissions = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchData();
+      document.getElementById('classSelect').addEventListener('change', () => {
+        const cls = document.getElementById('classSelect').value;
+        fetchData(cls);
+      });
+      document.getElementById('btnRefresh').addEventListener('click', () => {
+        const cls = document.getElementById('classSelect').value;
+        fetchData(cls);
+      });
+      document.getElementById('btnExport').addEventListener('click', exportToCsv);
+      document.getElementById('btnClearData').addEventListener('click', handleBatchClear);
+    });
+
+    async function fetchData(classCode = '') {
+      const tbody = document.getElementById('submissionsTableBody');
+      const url = classCode ? `/api/submissions?class=${encodeURIComponent(classCode)}` : '/api/submissions';
+
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('API 回應失敗 (狀態碼 ' + res.status + ')');
+        const result = await res.json();
+
+        if (result.success) {
+          document.getElementById('statDbStatus').textContent = '✅ Postgres 正常';
+          allSubmissions = result.data || [];
+          renderTable(allSubmissions);
+          updateStats(result);
+          if (!classCode && result.classes) {
+            updateClassSelect(result.classes);
+          }
+        } else {
+          throw new Error(result.error || '載入失敗');
+        }
+      } catch (err) {
+        console.warn('載入資料錯誤:', err);
+        document.getElementById('statDbStatus').textContent = '⚠️ 本地純靜態';
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="10" style="text-align: center; padding: 40px; color: #ef4444;">
+              <strong>⚠️ Netlify Database 尚未連線（目前在本地端或尚未部署）</strong><br>
+              <small style="color: #64748b;">當您將專案部署至 Netlify 後，此處將自動展示 Postgres 雲端資料庫中的每一筆作答！</small>
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    function renderTable(list) {
+      const tbody = document.getElementById('submissionsTableBody');
+      if (!list.length) {
+        tbody.innerHTML = `<tr><td colspan="11" style="text-align: center; padding: 30px; color: #94a3b8;">目前尚無學生作答紀錄</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(item => {
+        const levelClass = item.total_score >= 85 ? 'pill-a' : item.total_score >= 60 ? 'pill-b' : 'pill-c';
+        const dateStr = item.submitted_at ? new Date(item.submitted_at).toLocaleString('zh-TW', { hour12: false }) : '--';
+
+        return `
+          <tr>
+            <td><strong>${item.class_code}</strong></td>
+            <td>${item.seat_no}</td>
+            <td><strong>${item.student_name}</strong></td>
+            <td><span class="pill-score ${levelClass}">${item.total_score} 分</span></td>
+            <td>${item.overall_level || '--'}</td>
+            <td>${item.part1_score || 0} / 50</td>
+            <td>${item.singer1_name || '--'}</td>
+            <td>${item.singer2_name || '--'}</td>
+            <td style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${item.issue_topic || ''}">
+              ${item.issue_topic || '--'}
+            </td>
+            <td style="font-size: 0.82rem; color: #64748b;">${dateStr}</td>
+            <td style="text-align: center;">
+              <button 
+                type="button" 
+                class="btn-delete" 
+                onclick="deleteSingle(${item.id}, '${item.class_code}', '${item.seat_no}', '${item.student_name}')"
+                title="刪除此筆作答"
+              >
+                🗑️ 刪除
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    /**
+     * 單筆刪除學生紀錄
+     */
+    async function deleteSingle(id, classCode, seatNo, name) {
+      const confirmed = confirm(`⚠️ 確定要刪除【${classCode} 班 ${seatNo} 號 ${name}】的作答紀錄嗎？\n\n此動作將自 Netlify Database 資料庫中永久移除，無法復原！`);
+      if (!confirmed) return;
+
+      try {
+        const res = await fetch(`/api/submissions?id=${id}`, { method: 'DELETE' });
+        const result = await res.json();
+        if (result.success) {
+          alert(`✅ ${result.message}`);
+          const currentClass = document.getElementById('classSelect').value;
+          fetchData(currentClass);
+        } else {
+          alert(`❌ 刪除失敗：${result.error || '未知錯誤'}`);
+        }
+      } catch (err) {
+        alert('❌ 刪除請求失敗，請檢查網路連線。');
+      }
+    }
+
+    /**
+     * 批次清空紀錄 (依目前選取班級或全校)
+     */
+    async function handleBatchClear() {
+      const currentClass = document.getElementById('classSelect').value;
+      let confirmMsg = '';
+      let deleteUrl = '';
+
+      if (currentClass) {
+        confirmMsg = `⚠️ 警告！您確定要清空【${currentClass} 班】的所有學生作答紀錄嗎？\n\n此班級所有作答將被永久刪除！`;
+        deleteUrl = `/api/submissions?class=${encodeURIComponent(currentClass)}`;
+      } else {
+        confirmMsg = `🚨 極度危險警告！\n\n您目前選取的是【全部班級 (全校總表)】！\n確定要一鍵清空資料庫中「所有班級、所有學生」的全部紀錄嗎？\n\n這通常只在學期初或測試結束要歸零時使用！`;
+        deleteUrl = `/api/submissions?all=true`;
+      }
+
+      if (!confirm(confirmMsg)) return;
+
+      // 二次防呆確認
+      const doubleCheck = prompt(`請輸入「確認刪除」以執行清空：`);
+      if (doubleCheck !== '確認刪除') {
+        alert('輸入不符，已取消清空動作。');
+        return;
+      }
+
+      try {
+        const res = await fetch(deleteUrl, { method: 'DELETE' });
+        const result = await res.json();
+        if (result.success) {
+          alert(`✅ ${result.message}`);
+          fetchData('');
+        } else {
+          alert(`❌ 清空失敗：${result.error || '未知錯誤'}`);
+        }
+      } catch (err) {
+        alert('❌ 清空請求失敗，請檢查連線。');
+      }
+    }
+
+    function updateStats(result) {
+      const list = result.data || [];
+      document.getElementById('statTotalCount').textContent = list.length + ' 人';
+
+      if (list.length > 0) {
+        const sum = list.reduce((acc, cur) => acc + Number(cur.total_score || 0), 0);
+        const avg = (sum / list.length).toFixed(1);
+        const max = Math.max(...list.map(i => Number(i.total_score || 0)));
+        document.getElementById('statAvgScore').textContent = avg + ' 分';
+        document.getElementById('statMaxScore').textContent = max + ' 分';
+      } else {
+        document.getElementById('statAvgScore').textContent = '--';
+        document.getElementById('statMaxScore').textContent = '--';
+      }
+    }
+
+    function updateClassSelect(classes) {
+      const select = document.getElementById('classSelect');
+      const current = select.value;
+      select.innerHTML = '<option value="">全部班級 (全校總表)</option>';
+      classes.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.class_code;
+        opt.textContent = `${c.class_code} 班 (${c.count} 人，均分 ${c.avg_score})`;
+        select.appendChild(opt);
+      });
+      select.value = current;
+    }
+
+    function exportToCsv() {
+      if (!allSubmissions.length) {
+        alert('目前無可匯出的資料！');
+        return;
+      }
+      const headers = ['班級', '座號', '姓名', '綜合總分', '表現等級', '第一大題得分', 'Q1', 'Q2', 'Q3', 'Q4', 'Q5', '星馬歌手1', '代表作1', '原因1', '星馬歌手2', '代表作2', '原因2', '關注議題', '理念原因', '繳交時間'];
+      const rows = allSubmissions.map(i => [
+        `"${i.class_code}"`, `"${i.seat_no}"`, `"${i.student_name}"`, i.total_score, `"${i.overall_level || ''}"`,
+        i.part1_score, `"${i.q1 || ''}"`, `"${i.q2 || ''}"`, `"${i.q3 || ''}"`, `"${i.q4 || ''}"`, `"${i.q5 || ''}"`,
+        `"${(i.singer1_name || '').replace(/"/g, '""')}"`, `"${(i.singer1_song || '').replace(/"/g, '""')}"`, `"${(i.singer1_reason || '').replace(/"/g, '""')}"`,
+        `"${(i.singer2_name || '').replace(/"/g, '""')}"`, `"${(i.singer2_song || '').replace(/"/g, '""')}"`, `"${(i.singer2_reason || '').replace(/"/g, '""')}"`,
+        `"${(i.issue_topic || '').replace(/"/g, '""')}"`, `"${(i.issue_reason || '').replace(/"/g, '""')}"`,
+        `"${i.submitted_at || ''}"`
+      ]);
+
+      const csv = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `流行音樂開麥拉_Netlify_DB_資料庫匯出_${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>康軒音樂｜流行音樂開麥拉 學習單</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- 背景裝飾音符動態 -->
+  <div class="bg-decorations" aria-hidden="true">
+    <div class="floating-note note-1">🎵</div>
+    <div class="floating-note note-2">🎶</div>
+    <div class="floating-note note-3">🎸</div>
+    <div class="floating-note note-4">🎤</div>
+    <div class="floating-note note-5">🎷</div>
+  </div>
+
+  <header class="app-header">
+    <div class="header-container">
+      <div class="badge-wrapper">
+        <span class="publisher-tag">康軒音樂</span>
+        <span class="grade-tag">7年級音樂備課學習單</span>
+      </div>
+      <h1 class="main-title">
+        <span class="vinyl-icon">💿</span>
+        流行音樂開麥拉
+      </h1>
+      <p class="subtitle">認識多位臺灣歌手及流行音樂的發展，探索多元豐富的音樂樣貌，展現你的音樂觀察與創作想法！</p>
+      
+      <!-- 老師後台設定入口按鈕群 -->
+      <div style="position: absolute; top: 0; right: 0; display: flex; gap: 8px;">
+        <a href="dashboard.html" class="btn-teacher-config" title="檢視 Netlify Database 雲端資料庫成績與統計" style="text-decoration: none;">
+          📊 成績後台
+        </a>
+        <button type="button" class="btn-teacher-config" id="btnOpenConfig" title="設定 Google 試算表 Web App 網址">
+          ⚙️ 試算表設定
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <form id="worksheetForm" novalidate>
+
+      <!-- 區塊：學生基本資料 -->
+      <section class="card section-student-info">
+        <div class="card-header">
+          <div class="section-badge">基本資料</div>
+          <h2>學生基本資訊</h2>
+          <p class="section-desc">請務必正確填寫班級、座號與姓名，填寫無誤才能送出喔！</p>
+        </div>
+
+        <div class="form-grid">
+          <!-- 班級 -->
+          <div class="form-group" id="groupClass">
+            <label for="inputClass">
+              <span class="req">*</span> 班級代碼
+              <span class="field-hint">（7年級1班請填 <strong>701</strong>）</span>
+            </label>
+            <div class="input-with-icon">
+              <span class="input-icon">🏫</span>
+              <input 
+                type="text" 
+                id="inputClass" 
+                name="classCode" 
+                placeholder="例如：701" 
+                maxlength="4" 
+                autocomplete="off"
+                required
+              >
+            </div>
+            <div class="error-msg" id="errorClass">請輸入正確的3位數班級（例如7年級1班填701）</div>
+            <div class="success-tip" id="tipClass"></div>
+          </div>
+
+          <!-- 座號 -->
+          <div class="form-group" id="groupSeat">
+            <label for="inputSeat">
+              <span class="req">*</span> 座號
+              <span class="field-hint">（兩位數，例如 <strong>05</strong>、<strong>18</strong>）</span>
+            </label>
+            <div class="input-with-icon">
+              <span class="input-icon">🔢</span>
+              <input 
+                type="text" 
+                id="inputSeat" 
+                name="seatNo" 
+                placeholder="例如：08" 
+                maxlength="2" 
+                autocomplete="off"
+                required
+              >
+            </div>
+            <div class="error-msg" id="errorSeat">座號請輸入兩位數（01~99）</div>
+            <div class="success-tip" id="tipSeat"></div>
+          </div>
+
+          <!-- 姓名 -->
+          <div class="form-group" id="groupName">
+            <label for="inputName">
+              <span class="req">*</span> 學生姓名
+              <span class="field-hint">（請填全名）</span>
+            </label>
+            <div class="input-with-icon">
+              <span class="input-icon">👤</span>
+              <input 
+                type="text" 
+                id="inputName" 
+                name="studentName" 
+                placeholder="請輸入你的姓名" 
+                maxlength="20"
+                autocomplete="off"
+                required
+              >
+            </div>
+            <div class="error-msg" id="errorName">請填寫完整的真實姓名</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 區塊：第一大題 牛刀小試 -->
+      <section class="card section-quiz">
+        <div class="card-header">
+          <div class="section-badge score-badge">第一大題｜共 50 分</div>
+          <h2>一、牛刀小試（選擇題，每題 10 分）</h2>
+          <p class="section-desc">試著回顧課本與課堂內容，選出最適合的正確答案：</p>
+        </div>
+
+        <div class="quiz-list">
+          <!-- 題 1 -->
+          <div class="quiz-item" id="itemQ1">
+            <div class="quiz-title">
+              <span class="q-num">1</span>
+              <div class="q-text">下列哪個樂團曾與交響樂團合作，融入古典音樂作品，於西元 2009 年開始「韋瓦第計畫」？</div>
+            </div>
+            <div class="options-grid">
+              <label class="option-label">
+                <input type="radio" name="q1" value="A" required>
+                <span class="opt-box"><span class="opt-key">A</span><span class="opt-val">滅火器樂團</span></span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q1" value="B">
+                <span class="opt-box"><span class="opt-key">B</span><span class="opt-val">草東沒有派對</span></span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q1" value="C">
+                <span class="opt-box"><span class="opt-key">C</span><span class="opt-val">蘇打綠</span></span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q1" value="D">
+                <span class="opt-box"><span class="opt-key">D</span><span class="opt-val">茄子蛋</span></span>
+              </label>
+            </div>
+            <div class="item-error" id="errorQ1">請選擇第 1 題的答案</div>
+          </div>
+
+          <!-- 題 2 -->
+          <div class="quiz-item" id="itemQ2">
+            <div class="quiz-title">
+              <span class="q-num">2</span>
+              <div class="q-text">下列何首歌曲曾獲得金曲獎「最佳年度歌曲獎」？</div>
+            </div>
+            <div class="options-grid">
+              <label class="option-label">
+                <input type="radio" name="q2" value="A" required>
+                <span class="opt-box"><span class="opt-key">A</span><span class="opt-val">〈島嶼天光〉</span></span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q2" value="B">
+                <span class="opt-box"><span class="opt-key">B</span><span class="opt-val">〈用餘生去愛〉</span></span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q2" value="C">
+                <span class="opt-box"><span class="opt-key">C</span><span class="opt-val">〈浪子回頭〉</span></span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q2" value="D">
+                <span class="opt-box"><span class="opt-key">D</span><span class="opt-val">〈長途夜車〉</span></span>
+              </label>
+            </div>
+            <div class="item-error" id="errorQ2">請選擇第 2 題的答案</div>
+          </div>
+
+          <!-- 題 3 -->
+          <div class="quiz-item" id="itemQ3">
+            <div class="quiz-title">
+              <span class="q-num">3</span>
+              <div class="q-text">下列哪位歌手以電音結合阿美族古調進行音樂創作？</div>
+            </div>
+            <div class="options-grid">
+              <label class="option-label">
+                <input type="radio" name="q3" value="A" required>
+                <span class="opt-box"><span class="opt-key">A</span><span class="opt-val">羅志祥</span></span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q3" value="B">
+                <span class="opt-box"><span class="opt-key">B</span><span class="opt-val">蘇打綠</span></span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q3" value="C">
+                <span class="opt-box"><span class="opt-key">C</span><span class="opt-val">舒米恩．魯碧</span></span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q3" value="D">
+                <span class="opt-box"><span class="opt-key">D</span><span class="opt-val">蕭煌奇</span></span>
+              </label>
+            </div>
+            <div class="item-error" id="errorQ3">請選擇第 3 題的答案</div>
+          </div>
+
+          <!-- 題 4 -->
+          <div class="quiz-item" id="itemQ4">
+            <div class="quiz-title">
+              <span class="q-num">4</span>
+              <div class="q-text">下列哪位歌手將電音曲風加入閩南語歌曲，成為一大突破？</div>
+            </div>
+            <div class="options-grid">
+              <label class="option-label">
+                <input type="radio" name="q4" value="A" required>
+                <span class="opt-box"><span class="opt-key">A</span><span class="opt-val">江蕙</span></span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q4" value="B">
+                <span class="opt-box"><span class="opt-key">B</span><span class="opt-val">謝金燕</span></span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q4" value="C">
+                <span class="opt-box"><span class="opt-key">C</span><span class="opt-val">李千娜</span></span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q4" value="D">
+                <span class="opt-box"><span class="opt-key">D</span><span class="opt-val">柯佳嬿</span></span>
+              </label>
+            </div>
+            <div class="item-error" id="errorQ4">請選擇第 4 題的答案</div>
+          </div>
+
+          <!-- 題 5 -->
+          <div class="quiz-item" id="itemQ5">
+            <div class="quiz-title">
+              <span class="q-num">5</span>
+              <div class="q-text">下列哪位歌手在霹靂布袋戲的作品中融入多元曲風？</div>
+            </div>
+            <div class="options-grid">
+              <label class="option-label">
+                <input type="radio" name="q5" value="A" required>
+                <span class="opt-box"><span class="opt-key">A</span><span class="opt-val">蕭煌奇</span></span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q5" value="B">
+                <span class="opt-box"><span class="opt-key">B</span><span class="opt-val">林生祥</span></span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q5" value="C">
+                <span class="opt-box"><span class="opt-key">C</span><span class="opt-val">姚中仁</span></span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q5" value="D">
+                <span class="opt-box"><span class="opt-key">D</span><span class="opt-val">荒山亮</span></span>
+              </label>
+            </div>
+            <div class="item-error" id="errorQ5">請選擇第 5 題的答案</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 區塊：第二大題 星馬歌手 -->
+      <section class="card section-subjective">
+        <div class="card-header">
+          <div class="section-badge score-badge">第二大題｜共 25 分</div>
+          <h2>二、星馬歌手（共 2 組，每組 12.5 分）</h2>
+          <p class="section-desc">
+            請寫出在臺灣發展的<strong>星馬歌手</strong>（新加坡或馬來西亞籍）、你所了解的知名作品，以及喜歡的原因。
+          </p>
+          <div class="tip-box">
+            <span class="tip-icon">💡</span>
+            <div class="tip-text">
+              <strong>評分小撇步：</strong>
+              <span>① 歌手須為星馬籍（如孫燕姿、林俊傑、梁靜茹、光良、戴佩妮等）。② 寫出具體歌名。③ 喜歡原因可連結「歌聲特色」、「曲風旋律」、「歌詞意境」或「陪伴你的聽歌心情」，寫得越具體分數越高喔！</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="singers-wrapper">
+          <!-- 第 1 組 -->
+          <div class="singer-subcard" id="singerCard1">
+            <div class="singer-badge">第 1 組歌手</div>
+            <div class="sub-form-grid">
+              <div class="form-group">
+                <label for="singer1Name"><span class="req">*</span> 歌手姓名：</label>
+                <input type="text" id="singer1Name" name="singer1Name" placeholder="例如：孫燕姿、林俊傑..." required>
+                <div class="field-error" id="errorSinger1Name">請輸入第 1 位星馬歌手姓名</div>
+              </div>
+              <div class="form-group">
+                <label for="singer1Song"><span class="req">*</span> 知名作品名稱：</label>
+                <input type="text" id="singer1Song" name="singer1Song" placeholder="例如：〈天黑黑〉、〈遇見〉、〈逆光〉" required>
+                <div class="field-error" id="errorSinger1Song">請填寫至少一首知名代表作</div>
+              </div>
+            </div>
+            <div class="form-group full-width">
+              <label for="singer1Reason"><span class="req">*</span> 喜歡的原因（請具體說明）：</label>
+              <textarea 
+                id="singer1Reason" 
+                name="singer1Reason" 
+                rows="3" 
+                placeholder="例如：她的聲音很有辨識度，唱抒情歌細膩感人，〈逆光〉這首歌在低潮時給我勇氣與陪伴..." 
+                required
+              ></textarea>
+              <div class="textarea-footer">
+                <span class="char-count" id="countSinger1">0 字</span>
+                <span class="field-error" id="errorSinger1Reason">請具體說明喜歡的原因（建議寫出歌聲、曲風或個人共鳴）</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 第 2 組 -->
+          <div class="singer-subcard" id="singerCard2">
+            <div class="singer-badge">第 2 組歌手</div>
+            <div class="sub-form-grid">
+              <div class="form-group">
+                <label for="singer2Name"><span class="req">*</span> 歌手姓名：</label>
+                <input type="text" id="singer2Name" name="singer2Name" placeholder="例如：梁靜茹、光良、戴佩妮..." required>
+                <div class="field-error" id="errorSinger2Name">請輸入第 2 位星馬歌手姓名</div>
+              </div>
+              <div class="form-group">
+                <label for="singer2Song"><span class="req">*</span> 知名作品名稱：</label>
+                <input type="text" id="singer2Song" name="singer2Song" placeholder="例如：〈勇氣〉、〈童話〉、〈你要的愛〉" required>
+                <div class="field-error" id="errorSinger2Song">請填寫代表作品名稱</div>
+              </div>
+            </div>
+            <div class="form-group full-width">
+              <label for="singer2Reason"><span class="req">*</span> 喜歡的原因（請具體說明）：</label>
+              <textarea 
+                id="singer2Reason" 
+                name="singer2Reason" 
+                rows="3" 
+                placeholder="例如：溫柔療癒的歌聲，歌詞唱出青春的心情，旋律朗朗上口..." 
+                required
+              ></textarea>
+              <div class="textarea-footer">
+                <span class="char-count" id="countSinger2">0 字</span>
+                <span class="field-error" id="errorSinger2Reason">請具體說明喜歡的原因</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 區塊：第三大題 如果我是歌手 -->
+      <section class="card section-creative">
+        <div class="card-header">
+          <div class="section-badge score-badge">第三大題｜共 25 分</div>
+          <h2>三、如果我是歌手（創作與社會關懷）</h2>
+          <p class="section-desc">
+            在課文中提到了許多歌手透過音樂關心社會議題，以音樂表達對土地的關心。如果我是一位具有影響力的歌手，我最想透過音樂表達什麼樣的議題或想法？為什麼？
+          </p>
+          <div class="tip-box">
+            <span class="tip-icon">✨</span>
+            <div class="tip-text">
+              <strong>評分小撇步（21～25分精熟）：</strong>
+              <span>① 明確提出想表達的議題（如：海洋環境生態、家鄉文化傳承、校園生活壓力、心理健康關懷、弱勢平權等）。② 清楚說明「為什麼」，連結自身觀察、生活經驗或期待對社會帶來的改變。</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="creative-content">
+          <div class="form-group">
+            <label for="issueTopic"><span class="req">*</span> 我最想透過音樂表達的議題或想法：</label>
+            <input 
+              type="text" 
+              id="issueTopic" 
+              name="issueTopic" 
+              placeholder="例如：關注海洋廢棄物與塑膠污染、傾聽青少年的焦慮與心理健康、偏鄉土地記憶..." 
+              required
+            >
+            <div class="field-error" id="errorIssueTopic">請寫出你最想表達的具體議題或想法</div>
+          </div>
+
+          <div class="form-group">
+            <label for="issueReason"><span class="req">*</span> 為什麼想寫／唱這個議題？（請說明原因與自身觀察）：</label>
+            <textarea 
+              id="issueReason" 
+              name="issueReason" 
+              rows="5" 
+              placeholder="請分享你的出發點：例如你在生活中觀察到了什麼現象？為什麼這件事對社會很重要？若你成為有影響力的歌手，你希望透過旋律與歌詞為聽眾或世界帶來什麼樣的力量或省思？"
+              required
+            ></textarea>
+            <div class="textarea-footer">
+              <span class="char-count" id="countIssueReason">0 字</span>
+              <span class="field-error" id="errorIssueReason">請詳細說明原因（建議 30 字以上，分享深刻的想法）</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 送出與防呆區 -->
+      <section class="submit-section">
+        <div class="submit-warning" id="formGlobalWarning" style="display: none;">
+          ⚠️ 還有未填寫或格式未完成的題目，請檢查上方紅色提示處！
+        </div>
+
+        <div class="submit-actions">
+          <button type="submit" class="btn-submit" id="btnSubmit">
+            <span class="btn-text">🚀 檢查無誤，確認送出學習單</span>
+          </button>
+        </div>
+        <p class="submit-note">💡 送出前系統會先自動檢查格式。送出後將自動存檔至教師雲端試算表並產出即時解析！</p>
+      </section>
+
+    </form>
+  </main>
+
+  <!-- 提交中的 Loading 遮罩 -->
+  <div class="modal-overlay" id="loadingModal">
+    <div class="modal-card loading-card">
+      <div class="spinning-vinyl"></div>
+      <h3 class="loading-title">正在上傳作答紀錄...</h3>
+      <p class="loading-desc">系統正在檢查格式、計算綜合評分並寫入各班雲端試算表中，請稍候片刻 🎵</p>
+    </div>
+  </div>
+
+  <!-- 提交成功的彈窗結果 -->
+  <div class="modal-overlay" id="resultModal">
+    <div class="modal-card result-card">
+      <div class="result-header">
+        <div class="success-icon">🎉</div>
+        <h2>學習單繳交完成！</h2>
+        <div id="resCloudBanner" class="cloud-banner"></div>
+      </div>
+
+      <div class="result-body">
+        <div class="student-summary">
+          <span class="pill-info" id="resClass">班級：701</span>
+          <span class="pill-info" id="resSeat">座號：05</span>
+          <span class="pill-info" id="resName">姓名：王小明</span>
+        </div>
+
+        <!-- 第一大題即時批改分數 -->
+        <div class="score-overview-box">
+          <div class="score-main">
+            <span class="score-label">第一大題（牛刀小試）即時得分</span>
+            <div class="score-num"><span id="resPart1Score">50</span> <small>/ 50 分</small></div>
+          </div>
+          <div class="score-tag" id="resPart1Tag">表現優異！</div>
+        </div>
+
+        <div class="auto-eval-box">
+          <h4>📊 綜合評分初評預覽（依教師評分標準）：</h4>
+          <div class="eval-grid">
+            <div class="eval-card">
+              <span class="eval-title">第一大題：牛刀小試</span>
+              <strong id="evalPart1">50 / 50 分</strong>
+              <small>客觀選擇題自動計分</small>
+            </div>
+            <div class="eval-card">
+              <span class="eval-title">第二大題：星馬歌手</span>
+              <strong id="evalPart2">待教師複評 (預估中)</strong>
+              <small>歌手身分、代表作與原因檢核</small>
+            </div>
+            <div class="eval-card">
+              <span class="eval-title">第三大題：如果我是歌手</span>
+              <strong id="evalPart3">待教師複評 (預估中)</strong>
+              <small>社會議題關懷與反思深度</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- 選擇題解析收合區 -->
+        <details class="explanation-details" open>
+          <summary>🔍 點我看第一大題「牛刀小試」題目詳解</summary>
+          <div class="explanation-content" id="explanationList">
+            <!-- 動態生成題目對錯與解析 -->
+          </div>
+        </details>
+      </div>
+
+      <div class="result-footer">
+        <button type="button" class="btn-print" id="btnPrint">🖨️ 列印 / 另存學習單證明 (PDF)</button>
+        <button type="button" class="btn-close-modal" id="btnCloseModal">關閉視窗</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 老師試算表 URL 設定彈窗 -->
+  <div class="modal-overlay" id="configModal">
+    <div class="modal-card config-card">
+      <div class="config-header">
+        <h3>⚙️ 教師 Google 試算表 Web App 網址設定</h3>
+        <button type="button" class="btn-close-x" id="btnCloseConfig">✕</button>
+      </div>
+      <div class="config-body">
+        <p class="config-desc">
+          請將您部署好的 <strong>Google Apps Script 網頁應用程式 (Web App) 網址</strong> 貼在下方。
+          學生送出時便會直接寫入您的 Google 試算表中（自動為每個班級建立獨立分頁）！
+        </p>
+
+        <div class="form-group">
+          <label for="gasUrlInput">Google Apps Script Web App URL：</label>
+          <div style="display: flex; gap: 8px;">
+            <input 
+              type="url" 
+              id="gasUrlInput" 
+              placeholder="https://script.google.com/macros/s/.../exec"
+              style="flex: 1;"
+            >
+            <button type="button" id="btnTestConn" style="background: #3b82f6; color: #fff; border: none; padding: 0 14px; border-radius: 8px; cursor: pointer; white-space: nowrap; font-weight: 600;">📡 測試連線</button>
+          </div>
+          <div id="testConnMsg" style="margin-top: 6px; font-size: 0.85rem; display: none;"></div>
+          <small class="field-hint">（若尚未部署，可先使用內建模擬模式測試功能）</small>
+        </div>
+
+        <div class="gas-help-box">
+          <strong>📌 如何取得這個網址？</strong>
+          <ol>
+            <li>在 Google 試算表中點選「擴充功能」→「Apps Script」。</li>
+            <li>將本專案 <code>Code.gs</code> 內容複製貼上。</li>
+            <li>點選右上角「部署」→「新部署」，選擇「網頁應用程式」。</li>
+            <li>執行身分選「我」，誰可以存取選「<strong>所有人</strong>」。</li>
+            <li>複製產生的網址並貼入上方欄位即可！</li>
+          </ol>
+        </div>
+      </div>
+      <div class="config-footer">
+        <button type="button" class="btn-save-config" id="btnSaveConfig">儲存設定</button>
+        <button type="button" class="btn-test-offline" id="btnExportCsv">📥 備用：下載本機作答暫存 (CSV)</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <p>康軒音樂｜國中音樂備課教材・流行音樂開麥拉 學習單系統</p>
+    <p class="tech-info">支援跨裝置響應式設計、格式自動驗證、Google Sheets 自動分班分頁分流與智慧綜合評分</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "name": "pop-music-on-air",
+  "version": "2.2.0",
+  "description": "康軒音樂 流行音樂開麥拉 學生學習單系統 (支援 Netlify Database 與 Google 試算表雙引擎儲存)",
+  "main": "index.html",
+  "dependencies": {
+    "@netlify/database": "2.0.3",
+    "@netlify/functions": "^2.8.2"
+  }
+}
